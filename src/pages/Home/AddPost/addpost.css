@@ -1,0 +1,17 @@
+.choose_file {
+	position: relative;
+	display: inline-block;
+	border-radius: 5px;
+	width: 50px;
+	padding: 6px 6px 0px 8px;
+	font: normal 16px Myriad Pro, Verdana, Geneva, sans-serif;
+	color: white;
+}
+.choose_file input[type="file"] {
+	-webkit-appearance: none;
+	position: absolute;
+	top: 5px;
+	cursor: pointer;
+	left: 5px;
+	opacity: 0;
+}
