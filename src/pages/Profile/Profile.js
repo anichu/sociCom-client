@@ -5,6 +5,7 @@ import axios from "axios";
 import { CiImageOn } from "react-icons/ci";
 import { toast } from "react-hot-toast";
 import Loader from "../Shared/Loader/Loader";
+import Post from "../Posts/Post/Post";
 const Profile = () => {
 	const { user } = useContext(AuthContext);
 	const [userDetails, setUserDetails] = useState("");
@@ -12,7 +13,9 @@ const Profile = () => {
 	const [image, setImage] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
 	const [imageLoading, setImageLoading] = useState(false);
-
+	const [myPostsLoading, setMyPostLoading] = useState(false);
+	const [myposts, setMyposts] = useState([]);
+	// get user
 	useEffect(() => {
 		fetch(`http://localhost:5000/user?email=${user?.email}`)
 			.then((res) => res.json())
@@ -26,9 +29,24 @@ const Profile = () => {
 	}, [user?.email]);
 
 	useEffect(() => {
+		setMyPostLoading(true);
+		fetch(`http://localhost:5000/myposts?email=${user?.email}`)
+			.then((res) => res.json())
+			.then((data) => {
+				setMyposts(data);
+				setMyPostLoading(false);
+			})
+			.catch((err) => {
+				setMyPostLoading(false);
+				console.log(err);
+			});
+	}, [user?.email]);
+
+	// open modal
+	useEffect(() => {
 		setOpenModal(true);
 	}, [openModal]);
-
+	// update image
 	useEffect(() => {
 		if (image && image?.type?.includes("image")) {
 			setImageLoading(true);
@@ -117,8 +135,8 @@ const Profile = () => {
 	};
 	return (
 		<div className="pt-[70px]  text-white">
-			<div className="flex">
-				<div className="profile-info relative  w-[40%] m-4 p-5 bg-indigo-700 rounded-md">
+			<div className="flex justify-center">
+				<div className="profile-info relative max-h-[500px]  w-[40%] m-4 p-5 bg-indigo-700 rounded-md">
 					<label
 						htmlFor="my-modal-6"
 						className="absolute cursor-pointer top-2 right-2 "
@@ -179,7 +197,22 @@ const Profile = () => {
 						<b className="mr-2">Date Of Birth:</b> {userDetails?.dateOfBirth}
 					</p>
 				</div>
-				<div className="my-post w-1/2"></div>
+				<div className="my-post w-1/2">
+					{myPostsLoading ? (
+						<Loader></Loader>
+					) : (
+						<div>
+							<h1 className="text-center text-indigo-700 font-semibold text-3xl pb-2">
+								{" "}
+								My post{" "}
+							</h1>
+							<hr />
+							{myposts.map((post, index) => (
+								<Post key={index} post={post}></Post>
+							))}
+						</div>
+					)}
+				</div>
 			</div>
 			{openModal && (
 				<>

@@ -21,13 +21,6 @@ const Navbar = () => {
 					posts
 				</Link>
 			</li>
-			{user?.uid && (
-				<li>
-					<Link to="/" className="hover:bg-purple-900 rounded-md py-2">
-						Dashboard
-					</Link>
-				</li>
-			)}
 		</>
 	);
 	const logOutHandler = () => {
