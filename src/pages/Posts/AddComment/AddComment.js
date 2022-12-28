@@ -25,7 +25,6 @@ const AddComment = ({ commentId }) => {
 				form.reset();
 			}
 		} catch (err) {}
-		console.log(commentId);
 	};
 	return (
 		<div>
@@ -46,7 +45,9 @@ const AddComment = ({ commentId }) => {
 							Add Comment
 						</button>
 					</div>
-					<Link className="hover:underline">view comments</Link>
+					<Link to={`/post/${commentId}`} className="hover:underline">
+						view comments
+					</Link>
 				</div>
 			</form>
 		</div>

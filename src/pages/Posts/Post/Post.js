@@ -3,12 +3,22 @@ import Time from "../../Shared/Time/Time";
 import { FiThumbsUp } from "react-icons/fi";
 import { BiCommentDetail } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import AddComment from "../AddComment/AddComment";
-const Post = ({ post, commentId, setCommentId }) => {
-	const [postUser, setPostUser] = useState(null);
+import love from "../../../images/love.png";
+import like from "../../../images/like.png";
 
+import AddComment from "../AddComment/AddComment";
+const Post = ({ post, commentId, setCommentId, profile }) => {
+	const [postUser, setPostUser] = useState(null);
 	console.log(post);
 	const { createdDate, text, image, _id } = post;
+
+	const likeHandler = () => {
+		console.log("like");
+	};
+
+	const loveHandler = () => {
+		console.log("love");
+	};
 
 	useEffect(() => {
 		fetch(`http://localhost:5000/user?email=${post?.email}`)
@@ -34,11 +44,15 @@ const Post = ({ post, commentId, setCommentId }) => {
 						/>
 					</div>
 					<div className="profile-info ml-3">
-						<h4 className="">{postUser?.name}</h4>
+						<Link to={`/profile/${postUser?.email}`}>
+							<h4 className="hover:underline">{postUser?.name}</h4>
+						</Link>
 						<Time time={createdDate}></Time>
 					</div>
 				</div>
-				<Link className="hover:underline">view details</Link>
+				<Link to={`/post/${_id}`} className="hover:underline">
+					view details
+				</Link>
 			</div>
 			<div>
 				<h6 className="py-5 text-white">{text}</h6>
@@ -52,29 +66,47 @@ const Post = ({ post, commentId, setCommentId }) => {
 					</div>
 				)}
 			</div>
-			<hr className="mt-2" />
-			{/* */}
-			<div className="flex pt-4">
-				<div className="flex items-center">
-					<div>
-						<FiThumbsUp className="w-6 h-6"></FiThumbsUp>
+
+			{!profile && (
+				<>
+					<hr className="mt-2" />
+					{/* */}
+					<div className="flex pt-4">
+						<div className=" cursor-pointer transition-all duration-300 ease-in-out  hover:bg-indigo-900 px-4 py-2 rounded-md hover-effect relative flex items-center">
+							<div className="react-effect hidden">
+								<div className="absolute flex rounded-xl justify-between  w-[80px] p-2 bg-white top-[-42px]">
+									<p
+										onClick={likeHandler}
+										className="react transition-all duration-300"
+									>
+										<img className="w-10 h-6" title="like" src={like} alt="" />
+									</p>
+									<p onClick={loveHandler} className="react">
+										<img className="w-6 h-6" title="love" src={love} alt="" />
+									</p>
+								</div>
+							</div>
+							<div>
+								<FiThumbsUp className="w-6 h-6"></FiThumbsUp>
+							</div>
+							<div className="ml-1">Like</div>
+						</div>
+						<div
+							onClick={() => setCommentId(_id)}
+							className="ml-5 flex cursor-pointer items-center"
+						>
+							<div>
+								<BiCommentDetail className="w-6 h-6"></BiCommentDetail>
+							</div>
+							<div className="ml-1">Comment</div>
+						</div>
 					</div>
-					<div className="ml-1">Like</div>
-				</div>
-				<div
-					onClick={() => setCommentId(_id)}
-					className="ml-5 flex cursor-pointer items-center"
-				>
-					<div>
-						<BiCommentDetail className="w-6 h-6"></BiCommentDetail>
-					</div>
-					<div className="ml-1">Comment</div>
-				</div>
-			</div>
-			{commentId && commentId === _id && (
-				<div>
-					<AddComment commentId={commentId}></AddComment>
-				</div>
+					{commentId && commentId === _id && (
+						<div>
+							<AddComment commentId={commentId}></AddComment>
+						</div>
+					)}
+				</>
 			)}
 		</div>
 	);

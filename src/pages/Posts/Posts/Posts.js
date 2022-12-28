@@ -27,7 +27,7 @@ const Posts = () => {
 	}
 
 	return (
-		<div className="pt-[60px]">
+		<div className="pt-[70px]">
 			{posts &&
 				posts?.map((post, index) => {
 					return (

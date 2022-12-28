@@ -85,16 +85,16 @@ const AddPost = () => {
 	};
 
 	return (
-		<div>
+		<div className="w-1/2 bg-indigo-700 my-5 mx-auto">
 			<form className="bg-white w-full pt-[70px]">
-				<div className="border-2 rounded-md border-indigo-700 w-1/2 mx-auto p-4 bg-indigo-700">
+				<div className="border-2  border-indigo-700 w-full mx-auto p-4 bg-indigo-700">
 					<div className="w-full">
 						<textarea
 							onChange={(e) => setText(e.target.value)}
 							placeholder="write something what you want........"
 							name="text"
 							value={text}
-							className="bg-white text-left text-white  w-full h-auto border-transparent bg-transparent placeholder:text-gray py-2 border-0  text-base outline-none rounded-md"
+							className="bg-white text-left text-black p-2  w-full h-auto border-transparent bg-transparent placeholder:text-gray py-2 border-0  text-base outline-none rounded-md"
 						></textarea>
 						<div>
 							{imageLoading && <Loader></Loader>}
@@ -115,15 +115,17 @@ const AddPost = () => {
 						</div>
 					</div>
 				</div>
-				<div className="w-1/2 mt-4 mx-auto">
-					<button
-						type="button"
-						onClick={addPostHandler}
-						className="bg-indigo-700 text-white text-sm font-semibold px-3 py-1 rounded-lg  border-2"
-					>
-						Add Post
-					</button>
-				</div>
+				{(text || imageUrl) && (
+					<div className="text-left p-4 bg-indigo-700">
+						<button
+							type="button"
+							onClick={addPostHandler}
+							className="bg-purple-700 text-white text-sm font-semibold px-3 py-1 rounded-sm"
+						>
+							Add Post
+						</button>
+					</div>
+				)}
 			</form>
 		</div>
 	);

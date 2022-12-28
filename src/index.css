@@ -36,3 +36,11 @@ code {
 	left: 0px;
 	opacity: 0;
 }
+
+div.hover-effect:hover > div.react-effect {
+	display: flex;
+}
+
+p.react:hover {
+	transform: scale(1.2);
+}

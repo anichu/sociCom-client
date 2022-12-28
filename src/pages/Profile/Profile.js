@@ -135,7 +135,7 @@ const Profile = () => {
 	};
 	return (
 		<div className="pt-[70px]  text-white">
-			<div className="flex justify-center">
+			<div className="flex justify-around">
 				<div className="profile-info relative max-h-[500px]  w-[40%] m-4 p-5 bg-indigo-700 rounded-md">
 					<label
 						htmlFor="my-modal-6"
@@ -197,18 +197,13 @@ const Profile = () => {
 						<b className="mr-2">Date Of Birth:</b> {userDetails?.dateOfBirth}
 					</p>
 				</div>
-				<div className="my-post w-1/2">
+				<div className="my-post w-[60%]">
 					{myPostsLoading ? (
 						<Loader></Loader>
 					) : (
 						<div>
-							<h1 className="text-center text-indigo-700 font-semibold text-3xl pb-2">
-								{" "}
-								My post{" "}
-							</h1>
-							<hr />
 							{myposts.map((post, index) => (
-								<Post key={index} post={post}></Post>
+								<Post profile key={index} post={post}></Post>
 							))}
 						</div>
 					)}
