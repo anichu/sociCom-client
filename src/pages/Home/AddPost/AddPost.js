@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { CiImageOn } from "react-icons/ci";
 import { AuthContext } from "../../../contexts/AuthContetxt/AuthProvider";
+import Loader from "../../Shared/Loader/Loader";
 import "./addpost.css";
 
 const AddPost = () => {
@@ -10,9 +11,11 @@ const AddPost = () => {
 	const [text, setText] = useState("");
 	const [image, setImage] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
+	const [imageLoading, setImageLoading] = useState(false);
 
 	useEffect(() => {
 		if (image && image?.type?.includes("image")) {
+			setImageLoading(true);
 			const formData = new FormData();
 			formData.append("image", image);
 			const imageHostKey = process.env.REACT_APP_imgbb_key;
@@ -27,8 +30,12 @@ const AddPost = () => {
 						console.log(imgData.data.url);
 						setImageUrl(imgData.data.url);
 					}
+					setImageLoading(false);
 				})
-				.catch((err) => console.log(err.message));
+				.catch((err) => {
+					setImageLoading(false);
+					console.log(err.message);
+				});
 		} else if (image && !image?.type?.includes("image")) {
 			console.log("pdf");
 		} else if (image) {
@@ -65,6 +72,7 @@ const AddPost = () => {
 				);
 				console.log(data);
 				if (data.acknowledged) {
+					toast.success("post created successfully");
 					setText("");
 					setImageUrl("");
 					setImage("");
@@ -78,7 +86,7 @@ const AddPost = () => {
 
 	return (
 		<div>
-			<form className="bg-white py-10 w-full">
+			<form className="bg-white w-full pt-[70px]">
 				<div className="border-2 rounded-md border-indigo-700 w-1/2 mx-auto p-4 bg-indigo-700">
 					<div className="w-full">
 						<textarea
@@ -86,9 +94,10 @@ const AddPost = () => {
 							placeholder="write something what you want........"
 							name="text"
 							value={text}
-							className="bg-white text-left text-white  w-full h-auto border-transparent bg-transparent placeholder:text-white py-2 border-0  text-base outline-none rounded-md"
+							className="bg-white text-left text-white  w-full h-auto border-transparent bg-transparent placeholder:text-gray py-2 border-0  text-base outline-none rounded-md"
 						></textarea>
 						<div>
+							{imageLoading && <Loader></Loader>}
 							{imageUrl && (
 								<img className="text-left rounded-md" src={imageUrl} alt="" />
 							)}

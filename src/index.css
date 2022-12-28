@@ -18,3 +18,21 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
+
+.choose_file_profile {
+	position: relative;
+	display: inline-block;
+	border-radius: 5px;
+	width: 250px;
+	padding: 6px 6px 0px 8px;
+	font: normal 16px Myriad Pro, Verdana, Geneva, sans-serif;
+	color: white;
+}
+.choose_file_profile input[type="file"] {
+	-webkit-appearance: none;
+	position: absolute;
+	top: 0;
+	cursor: pointer;
+	left: 0px;
+	opacity: 0;
+}
