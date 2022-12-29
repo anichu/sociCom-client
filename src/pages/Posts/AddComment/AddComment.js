@@ -4,8 +4,9 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContetxt/AuthProvider";
 
-const AddComment = ({ commentId }) => {
+const AddComment = ({ commentId, setCountComments }) => {
 	const { user } = useContext(AuthContext);
+
 	const commentSubmitHandler = async (event) => {
 		event.preventDefault();
 		const form = event.target;
@@ -22,6 +23,7 @@ const AddComment = ({ commentId }) => {
 			console.log(data);
 			if (data) {
 				toast.success("comment created successfully");
+				setCountComments((prev) => prev + 1);
 				form.reset();
 			}
 		} catch (err) {}

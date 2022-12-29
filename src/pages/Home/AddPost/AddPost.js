@@ -85,7 +85,7 @@ const AddPost = () => {
 	};
 
 	return (
-		<div className="w-1/2 bg-indigo-700 my-5 mx-auto">
+		<div className="w-3/4 bg-indigo-700 my-5 mx-auto">
 			<form className="bg-white w-full pt-[70px]">
 				<div className="border-2  border-indigo-700 w-full mx-auto p-4 bg-indigo-700">
 					<div className="w-full">

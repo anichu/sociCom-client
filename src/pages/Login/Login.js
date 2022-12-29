@@ -43,20 +43,28 @@ const Login = () => {
 		// console.log(email, password);
 	};
 
+	// google signup
 	const googleSignIn = () => {
 		handleGoogleSignIn()
 			.then((result) => {
 				const user = result.user;
+				// create user in mongodb
 				fetch("http://localhost:5000/users/google", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json",
 					},
 					body: JSON.stringify({
-						email: user.email,
-						role: "buyer",
-						name: user.displayName,
-						isVerified: false,
+						email: user?.email,
+						name: user?.displayName,
+						university: "",
+						city: "",
+						address: "",
+						gender: "",
+						dateOfBirth: "",
+						image: user?.photoURL
+							? user?.photoURL
+							: "https://i.ibb.co/fp92Ldr/icons8-person-90.png",
 					}),
 				})
 					.then((res) => res.json())
@@ -64,7 +72,7 @@ const Login = () => {
 						console.log(data);
 						if (data.acknowledged) {
 							setLoginEmail(user.email);
-							toast.success("user login");
+							toast.success("user created");
 							setError("");
 						}
 					})

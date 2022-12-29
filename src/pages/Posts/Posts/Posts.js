@@ -8,6 +8,10 @@ const Posts = () => {
 	const [commentId, setCommentId] = useState();
 
 	useEffect(() => {
+		fetchPosts();
+	}, []);
+
+	const fetchPosts = () => {
 		setPostLoading(true);
 		fetch("http://localhost:5000/posts")
 			.then((res) => res.json())
@@ -20,10 +24,14 @@ const Posts = () => {
 				console.log(err.message);
 				setPostLoading(false);
 			});
-	}, []);
+	};
 
 	if (postLoading) {
-		return <Loader></Loader>;
+		return (
+			<div className="pt-[70px]">
+				<Loader></Loader>
+			</div>
+		);
 	}
 
 	return (
@@ -36,6 +44,7 @@ const Posts = () => {
 							commentId={commentId}
 							setCommentId={setCommentId}
 							post={post}
+							fetchPosts={fetchPosts}
 						></Post>
 					);
 				})}

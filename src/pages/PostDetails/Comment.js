@@ -26,7 +26,7 @@ const Comment = ({ comment }) => {
 						/>
 					</div>
 				</div>
-				<div className="shadow-lg ml-2 border-[1px] px-3 bg-indigo-900 py-1 w-full rounded-md ">
+				<div className="shadow-lg ml-2 border-[1px] px-3 bg-indigo-600 py-1 w-full rounded-md ">
 					<h1>{commentUser?.name}</h1>
 					<p className="text-white">{comment.comment}</p>
 				</div>
