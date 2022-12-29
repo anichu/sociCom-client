@@ -16,13 +16,83 @@ const PostDetails = () => {
 	const { user } = useContext(AuthContext);
 	const [post, setPost] = useState(null);
 	const [postUser, setPostUser] = useState(null);
+	const [isLike, setIsLike] = useState(null);
+	const [countComments, setCountComments] = useState(post?.comments.length);
+	const [likeCount, setLikeCount] = useState({ like: 0, love: 0 });
 
-	const likeHandler = () => {
-		console.log("like");
+	useEffect(() => {
+		fetchPost();
+	}, [id]);
+	useEffect(() => {
+		if (post) {
+			fetch(`http://localhost:5000/user?email=${post?.email}`)
+				.then((res) => res.json())
+				.then((data) => {
+					console.log(data);
+					setPostUser(data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	}, [post, post?.email]);
+
+	useEffect(() => {
+		if (post) {
+			const { likes } = post;
+			for (let i = 0; i < likes.length; i++) {
+				if (likes[i].email === user?.email) {
+					setIsLike(likes[i]);
+				}
+			}
+		}
+	}, [setIsLike, user?.email, post]);
+	const likeHandler = async () => {
+		const createReaction = {
+			like: "like",
+			name: user?.name,
+			email: user?.email,
+		};
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
+		try {
+			if (isLike?.like !== "like") {
+				const { data } = await axios.post(
+					`http://localhost:5000/post/like/${post?._id}`,
+					createReaction
+				);
+				setIsLike(data);
+				console.log(data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
-	const loveHandler = () => {
-		console.log("love");
+	const loveHandler = async () => {
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
+		const createReaction = {
+			like: "love",
+			name: user?.name,
+			email: user?.email,
+		};
+		try {
+			if (isLike?.like !== "love") {
+				const { data } = await axios.post(
+					`http://localhost:5000/post/like/${post?._id}`,
+					createReaction
+				);
+				setIsLike(data);
+				console.log(data);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 	const commentSubmitHandler = async (event) => {
 		event.preventDefault();
@@ -40,6 +110,7 @@ const PostDetails = () => {
 			console.log(data);
 			if (data) {
 				toast.success("comment created successfully");
+				setCountComments((prev) => prev + 1);
 				fetchPost();
 				form.reset();
 			}
@@ -51,27 +122,48 @@ const PostDetails = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				setPost(data);
+				setCountComments(data?.comments?.length);
 				console.log(data);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
-
 	useEffect(() => {
-		fetchPost();
-	}, [id]);
-	useEffect(() => {
-		fetch(`http://localhost:5000/user?email=${post?.email}`)
-			.then((res) => res.json())
-			.then((data) => {
+		fetchTotalCount();
+	}, [post?._id, isLike, setIsLike]);
+	const fetchTotalCount = () => {
+		if (post) {
+			fetch(`http://localhost:5000/post/like/total/${post?._id}`)
+				.then((res) => res.json())
+				.then((data) => {
+					console.log(data);
+					setLikeCount(data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+	const deleteLikeHandler = async (likeId = null) => {
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
+		try {
+			if (likeId) {
+				const { data } = axios.get(
+					`http://localhost:5000/post/like/delete?postId=${post._id}&likeId=${likeId}&email=${user?.email}`
+				);
+				setIsLike(null);
+				fetchTotalCount();
 				console.log(data);
-				setPostUser(data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, [post?.email]);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	console.log(post);
 	return (
 		<div className="w-3/4 mt-[80px] bg-indigo-800 my-4 p-10 rounded-md  mx-auto">
@@ -105,12 +197,49 @@ const PostDetails = () => {
 				)}
 			</div>
 
+			{/* show reaction number */}
+			<hr className="pt-3 mt-2" />
+			<div className="flex justify-between">
+				<div>
+					{likeCount.like > likeCount.love ? (
+						<div className="flex">
+							<div className="flex items-center">
+								<span>{likeCount.like}</span>
+								<img className="w-10 h-6" title="like" src={like} alt="" />
+							</div>
+							<div className="flex items-center">
+								<span className="mr-2">{likeCount.love}</span>
+								<img className="w-6 h-6" title="love" src={love} alt="" />
+							</div>
+						</div>
+					) : (
+						<div className="flex">
+							<div className="flex items-center mr-2">
+								<span className="text-white mr-2">{likeCount.love}</span>
+								<img className="w-6 h-6" title="love" src={love} alt="" />
+							</div>
+							<div className="flex items-center">
+								<span>{likeCount.like}</span>
+								<img className="w-10 h-6" title="like" src={like} alt="" />
+							</div>
+						</div>
+					)}
+				</div>
+				<div>
+					{countComments > 0 && (
+						<Link to={`/post/${post?._id}`} className="hover:underline">
+							<p>{countComments} comments</p>
+						</Link>
+					)}
+				</div>
+			</div>
+
 			<hr className="mt-2" />
 			{/* */}
 			<div className="flex pt-4">
-				<div className=" cursor-pointer transition-all duration-300 ease-in-out  hover:bg-indigo-900 px-4 py-2 rounded-md hover-effect relative flex items-center">
+				<div className=" cursor-pointer transition-all  ease-in-out  hover:bg-indigo-900 px-4 py-2 rounded-md hover-effect relative flex items-center">
 					<div className="react-effect hidden">
-						<div className="absolute flex rounded-xl justify-between  w-[80px] p-2 bg-white top-[-42px]">
+						<div className="absolute flex rounded-xl left-0 justify-between  w-[80px] p-2 bg-white top-[-38px]">
 							<p
 								onClick={likeHandler}
 								className="react transition-all duration-300"
@@ -122,10 +251,39 @@ const PostDetails = () => {
 							</p>
 						</div>
 					</div>
-					<div>
-						<FiThumbsUp className="w-6 h-6"></FiThumbsUp>
+
+					<div onClick={() => deleteLikeHandler(isLike?._id)}>
+						{isLike ? (
+							isLike?.like === "like" ? (
+								<img className="w-10 h-6" title="like" src={like} alt="" />
+							) : (
+								<img className="w-6 h-6" title="love" src={love} alt="" />
+							)
+						) : (
+							<div>
+								<FiThumbsUp className="w-6 h-6"></FiThumbsUp>
+							</div>
+						)}
 					</div>
-					<div className="ml-1">Like</div>
+					<div className="ml-1">
+						{isLike ? (
+							isLike?.like === "like" ? (
+								<span className="text-blue-600 text-xl font-semibold">
+									like
+								</span>
+							) : (
+								<span className="text-red-700  font-semibold">love</span>
+							)
+						) : (
+							"Like"
+						)}
+					</div>
+				</div>
+				<div className="ml-5 flex cursor-pointer items-center">
+					<div>
+						<BiCommentDetail className="w-6 h-6"></BiCommentDetail>
+					</div>
+					<div className="ml-1">Comment</div>
 				</div>
 			</div>
 
@@ -152,7 +310,11 @@ const PostDetails = () => {
 			<div>
 				{post &&
 					post?.comments?.map((comment, index) => (
-						<Comment key={index} comment={comment}></Comment>
+						<Comment
+							key={index}
+							setCountComments={setCountComments}
+							comment={comment}
+						></Comment>
 					))}
 			</div>
 		</div>

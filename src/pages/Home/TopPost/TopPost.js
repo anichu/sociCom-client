@@ -3,6 +3,7 @@ import Post from "../../Posts/Post/Post";
 
 const TopPost = () => {
 	const [popularPost, setPopularPost] = useState([]);
+	const [commentId, setCommentId] = useState();
 	const [loading, setLoading] = useState(false);
 	useEffect(() => {
 		setLoading(true);
@@ -23,7 +24,13 @@ const TopPost = () => {
 			<div>
 				{popularPost &&
 					popularPost.map((post, index) => (
-						<Post post={post} TopPost key={index}></Post>
+						<Post
+							post={post}
+							setCommentId={setCommentId}
+							commentId={commentId}
+							TopPost
+							key={index}
+						></Post>
 					))}
 			</div>
 		</div>

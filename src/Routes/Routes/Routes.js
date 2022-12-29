@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../LayOut/Main/Main";
+import NotFoundRoute from "../../notFoundRoute/NotFoundRoute";
 import Home from "../../pages/Home/Home/Home";
 import Login from "../../pages/Login/Login";
 import PostDetails from "../../pages/PostDetails/PostDetails";
@@ -31,7 +32,11 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/profile",
-				element: <Profile></Profile>,
+				element: (
+					<PrivateRoutes>
+						<Profile></Profile>
+					</PrivateRoutes>
+				),
 			},
 			{
 				path: "/post/:id",
@@ -42,6 +47,10 @@ const router = createBrowserRouter([
 				),
 			},
 		],
+	},
+	{
+		path: "*",
+		element: <NotFoundRoute></NotFoundRoute>,
 	},
 ]);
 

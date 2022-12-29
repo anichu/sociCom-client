@@ -9,6 +9,10 @@ const AddComment = ({ commentId, setCountComments }) => {
 
 	const commentSubmitHandler = async (event) => {
 		event.preventDefault();
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
 		const form = event.target;
 		const comment = form.comment.value;
 		const createComment = {

@@ -1,10 +1,4 @@
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Time from "../../Shared/Time/Time";
 import { FiThumbsUp } from "react-icons/fi";
 import { BiCommentDetail } from "react-icons/bi";
@@ -15,6 +9,7 @@ import like from "../../../images/like.png";
 import AddComment from "../AddComment/AddComment";
 import axios from "axios";
 import { AuthContext } from "../../../contexts/AuthContetxt/AuthProvider";
+import { toast } from "react-hot-toast";
 const Post = ({
 	post,
 	TopPost,
@@ -55,7 +50,10 @@ const Post = ({
 			});
 	};
 	const deleteLikeHandler = async (likeId = null) => {
-		console.log(likeId);
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
 		try {
 			if (likeId) {
 				const { data } = axios.get(
@@ -77,6 +75,11 @@ const Post = ({
 			email: user?.email,
 		};
 
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
+
 		try {
 			if (isLike?.like !== "like") {
 				const { data } = await axios.post(
@@ -92,6 +95,10 @@ const Post = ({
 	};
 
 	const loveHandler = async () => {
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
 		const createReaction = {
 			like: "love",
 			name: user?.name,
@@ -184,7 +191,13 @@ const Post = ({
 						</div>
 					)}
 				</div>
-				<div>{countComments > 0 && <p>{countComments} comments</p>}</div>
+				<div>
+					{countComments > 0 && (
+						<Link to={`/post/${_id}`} className="hover:underline">
+							<p>{countComments} comments</p>
+						</Link>
+					)}
+				</div>
 			</div>
 
 			{(!profile || !user.email) && (

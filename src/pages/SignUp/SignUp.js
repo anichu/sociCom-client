@@ -132,7 +132,7 @@ const SignUp = () => {
 	};
 
 	return (
-		<div className="my-10">
+		<div className="pt-[64px] mb-5">
 			<form
 				onSubmit={handleSubmit(onSubmit)}
 				className="md:w-[50%] bg-indigo-800 sm:w-[80%] w-[95%]  mx-auto border shadow-2xl rounded-2xl p-5 mt-5"

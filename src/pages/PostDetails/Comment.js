@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Time from "../Shared/Time/Time";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, setCountComments }) => {
 	const [commentUser, setCommentUser] = useState(null);
 	useEffect(() => {
 		fetch(`http://localhost:5000/user?email=${comment?.email}`)

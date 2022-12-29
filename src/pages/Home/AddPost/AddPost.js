@@ -14,6 +14,11 @@ const AddPost = () => {
 	const [imageLoading, setImageLoading] = useState(false);
 
 	useEffect(() => {
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
+
 		if (image && image?.type?.includes("image")) {
 			setImageLoading(true);
 			const formData = new FormData();
@@ -41,9 +46,13 @@ const AddPost = () => {
 		} else if (image) {
 			toast.error();
 		}
-	}, [image]);
+	}, [image, user?.email]);
 
 	const addPostHandler = async () => {
+		if (!user?.email) {
+			toast.error("Please,Login");
+			return;
+		}
 		if (text || imageUrl) {
 			console.log(text, imageUrl);
 			const createUser = {
