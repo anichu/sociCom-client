@@ -12,7 +12,7 @@ const Footer = () => {
 		<footer className="border-t-2 max-h-[20vh] bg-purple-700">
 			<div className="py-3 text-center text-white">
 				{" "}
-				&copy; 2022 MD:Anis Molla
+				&copy; 2023 SociCom.com
 			</div>
 		</footer>
 	);
