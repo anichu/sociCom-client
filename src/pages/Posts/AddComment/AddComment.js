@@ -21,7 +21,7 @@ const AddComment = ({ commentId, setCountComments }) => {
 		};
 		try {
 			const { data } = await axios.post(
-				`http://localhost:5000/comment/${commentId}`,
+				`https://socicom-server-anichu.vercel.app/comment/${commentId}`,
 				createComment
 			);
 			console.log(data);

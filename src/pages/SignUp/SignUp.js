@@ -1,15 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContetxt/AuthProvider";
 import useToken from "../../hooks/useToken";
 import Alert from "../Shared/Alert/Alert";
+import Loader from "../Shared/Loader/Loader";
 
 const SignUp = () => {
-	const { createUser, updateUserProfile, handleGoogleSignIn } =
+	const { setTitle, createUser, updateUserProfile, handleGoogleSignIn } =
 		useContext(AuthContext);
 	const [emailToken, setEmailtoken] = useState("");
+	const [signupLoading, setSignupLoading] = useState(false);
 	const [token] = useToken(emailToken);
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -25,19 +27,24 @@ const SignUp = () => {
 		navigate(from, { replace: true });
 	}
 
+	useEffect(() => {
+		setTitle("Signup | SociCom");
+	}, [setTitle]);
 	const onSubmit = (data) => {
 		const { email, password, username } = data;
+		setSignupLoading(true);
 		createUser(email, password)
 			.then((result) => {
 				const user = result.user;
 				const email = user.email;
+
 				// update user profile name
 				handleUpdateUserProfile(
 					username,
 					"https://i.ibb.co/fp92Ldr/icons8-person-90.png"
 				);
 				// create user in mongodb
-				fetch("http://localhost:5000/users", {
+				fetch("https://socicom-server-anichu.vercel.app/users", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json",
@@ -59,16 +66,19 @@ const SignUp = () => {
 						if (data.acknowledged) {
 							setEmailtoken(email);
 							toast.success("user created");
+							setSignupLoading(false);
 						}
 						setError("");
 					})
 					.catch((err) => {
 						setError(err.message);
+						setSignupLoading(false);
 					});
 
 				setError("");
 			})
 			.catch((err) => {
+				setSignupLoading(false);
 				setError(err.message);
 				console.log(err);
 			});
@@ -90,11 +100,12 @@ const SignUp = () => {
 	// console.log(errors);
 	// google signup
 	const googleSignIn = () => {
+		setSignupLoading(true);
 		handleGoogleSignIn()
 			.then((result) => {
 				const user = result.user;
 				// create user in mongodb
-				fetch("http://localhost:5000/users/google", {
+				fetch("https://socicom-server-anichu.vercel.app/users/google", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json",
@@ -118,14 +129,17 @@ const SignUp = () => {
 						if (data.acknowledged) {
 							setEmailtoken(user.email);
 							toast.success("user created");
+							setSignupLoading(false);
 							setError("");
 						}
 					})
 					.catch((err) => {
+						setSignupLoading(false);
 						setError(err.message);
 					});
 			})
 			.catch((error) => {
+				setSignupLoading(false);
 				console.error("error: ", error);
 				setError(error.message);
 			});
@@ -137,6 +151,7 @@ const SignUp = () => {
 				onSubmit={handleSubmit(onSubmit)}
 				className="md:w-[50%] bg-indigo-800 sm:w-[80%] w-[95%]  mx-auto border shadow-2xl rounded-2xl p-5 mt-5"
 			>
+				{signupLoading && <Loader></Loader>}
 				{error && <Alert message={error}></Alert>}
 				<h1 className="text-center text-5xl my-5 text-white">SignUp</h1>
 

@@ -4,7 +4,9 @@ import Time from "../Shared/Time/Time";
 const Comment = ({ comment, setCountComments }) => {
 	const [commentUser, setCommentUser] = useState(null);
 	useEffect(() => {
-		fetch(`http://localhost:5000/user?email=${comment?.email}`)
+		fetch(
+			`https://socicom-server-anichu.vercel.app/user?email=${comment?.email}`
+		)
 			.then((res) => res.json())
 			.then((data) => {
 				console.log(data);

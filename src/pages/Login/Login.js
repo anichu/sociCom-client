@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContetxt/AuthProvider";
 import useToken from "../../hooks/useToken";
 import Alert from "../Shared/Alert/Alert";
+import Loader from "../Shared/Loader/Loader";
 
 const Login = () => {
 	const location = useLocation();
@@ -12,6 +13,11 @@ const Login = () => {
 	const [loginEmail, setLoginEmail] = useState("");
 	const [error, setError] = useState("");
 	const [token] = useToken(loginEmail);
+	const [logninLoading, setLoginLoading] = useState(false);
+	const { setTitle } = useContext(AuthContext);
+	useEffect(() => {
+		setTitle("Login | SociCom");
+	}, [setTitle]);
 
 	const from = location?.state?.from?.pathname || "/";
 	//const from = "/";
@@ -27,6 +33,7 @@ const Login = () => {
 
 	const onSubmit = (data) => {
 		const { email, password } = data;
+		setLoginLoading(true);
 		// signin with emaill and password
 		signIn(email, password)
 			.then((result) => {
@@ -34,8 +41,10 @@ const Login = () => {
 				console.log(user);
 				toast.success("user login");
 				setLoginEmail(data.email);
+				setLoginLoading(false);
 			})
 			.catch((error) => {
+				setLoginLoading(false);
 				console.log(error.message);
 				setError(error.message);
 			});
@@ -45,11 +54,12 @@ const Login = () => {
 
 	// google signup
 	const googleSignIn = () => {
+		setLoginLoading(true);
 		handleGoogleSignIn()
 			.then((result) => {
 				const user = result.user;
 				// create user in mongodb
-				fetch("http://localhost:5000/users/google", {
+				fetch("https://socicom-server-anichu.vercel.app/users/google", {
 					method: "POST",
 					headers: {
 						"content-type": "application/json",
@@ -74,17 +84,28 @@ const Login = () => {
 							setLoginEmail(user.email);
 							toast.success("user created");
 							setError("");
+							setLoginLoading(false);
 						}
 					})
 					.catch((err) => {
+						setLoginLoading(false);
 						setError(err.message);
 					});
 			})
 			.catch((error) => {
+				setLoginLoading(false);
 				console.error("error: ", error);
 				setError(error.message);
 			});
 	};
+
+	if (logninLoading) {
+		return (
+			<div className="pt-[62px]">
+				<Loader></Loader>
+			</div>
+		);
+	}
 	// console.log(errors);
 	return (
 		<div className="pt-[62px] mb-5">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Post from "../../Posts/Post/Post";
+import Loader from "../../Shared/Loader/Loader";
 
 const TopPost = () => {
 	const [popularPost, setPopularPost] = useState([]);
@@ -7,7 +8,7 @@ const TopPost = () => {
 	const [loading, setLoading] = useState(false);
 	useEffect(() => {
 		setLoading(true);
-		fetch("http://localhost:5000/popular")
+		fetch("https://socicom-server-anichu.vercel.app/popular")
 			.then((res) => res.json())
 			.then((data) => {
 				setPopularPost(data);
@@ -18,6 +19,9 @@ const TopPost = () => {
 			});
 	}, []);
 
+	if (loading) {
+		return <Loader></Loader>;
+	}
 	return (
 		<div>
 			<h1 className="text-center font-bold text-2xl">Popular post</h1>

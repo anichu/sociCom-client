@@ -19,7 +19,7 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [title, setTitle] = useState("Home | resealPhone");
+	const [title, setTitle] = useState("Home | SociCom");
 
 	const googleProvider = new GoogleAuthProvider();
 

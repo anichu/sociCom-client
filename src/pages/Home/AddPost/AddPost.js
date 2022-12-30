@@ -75,7 +75,7 @@ const AddPost = () => {
 
 			try {
 				const { data } = await axios.post(
-					"http://localhost:5000/posts",
+					"https://socicom-server-anichu.vercel.app/posts",
 					createUser,
 					config
 				);
@@ -94,16 +94,16 @@ const AddPost = () => {
 	};
 
 	return (
-		<div className="w-3/4 bg-indigo-700 my-5 mx-auto">
-			<form className="bg-white w-full pt-[70px]">
-				<div className="border-2  border-indigo-700 w-full mx-auto p-4 bg-indigo-700">
+		<div className="sm:w-3/4 w-full p-2 sm:p-0 mt-[70px] my-5 sm:mx-auto">
+			<form className="w-full bg-indigo-700 rounded-md">
+				<div className="border-2  border-indigo-700  rounded-md w-full mx-auto p-4 bg-indigo-700">
 					<div className="w-full">
 						<textarea
 							onChange={(e) => setText(e.target.value)}
 							placeholder="write something what you want........"
 							name="text"
 							value={text}
-							className="bg-white text-left text-black p-2  w-full h-auto border-transparent bg-transparent placeholder:text-gray py-2 border-0  text-base outline-none rounded-md"
+							className="bg-transparent text-left text-black p-2  w-full h-auto border-transparent  placeholder:text-gray py-2 border-0  text-base outline-none rounded-md"
 						></textarea>
 						<div>
 							{imageLoading && <Loader></Loader>}

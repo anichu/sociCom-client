@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContetxt/AuthProvider";
 import { FaCamera, FaEdit } from "react-icons/fa";
 import axios from "axios";
-import { CiImageOn } from "react-icons/ci";
+
 import { toast } from "react-hot-toast";
 import Loader from "../Shared/Loader/Loader";
 import Post from "../Posts/Post/Post";
 const Profile = () => {
-	const { user } = useContext(AuthContext);
+	const { user, setTitle } = useContext(AuthContext);
 	const [userDetails, setUserDetails] = useState("");
 	const [openModal, setOpenModal] = useState(true);
 	const [image, setImage] = useState("");
@@ -15,9 +15,13 @@ const Profile = () => {
 	const [imageLoading, setImageLoading] = useState(false);
 	const [myPostsLoading, setMyPostLoading] = useState(false);
 	const [myposts, setMyposts] = useState([]);
+
+	useEffect(() => {
+		setTitle("Profile | SociCom");
+	}, [setTitle]);
 	// get user
 	useEffect(() => {
-		fetch(`http://localhost:5000/user?email=${user?.email}`)
+		fetch(`https://socicom-server-anichu.vercel.app/user?email=${user?.email}`)
 			.then((res) => res.json())
 			.then((data) => {
 				console.log(data);
@@ -29,8 +33,14 @@ const Profile = () => {
 	}, [user?.email]);
 
 	useEffect(() => {
+		fetchMyPost();
+	}, [user?.email]);
+
+	const fetchMyPost = async () => {
 		setMyPostLoading(true);
-		fetch(`http://localhost:5000/myposts?email=${user?.email}`)
+		fetch(
+			`https://socicom-server-anichu.vercel.app/myposts?email=${user?.email}`
+		)
 			.then((res) => res.json())
 			.then((data) => {
 				setMyposts(data);
@@ -40,8 +50,7 @@ const Profile = () => {
 				setMyPostLoading(false);
 				console.log(err);
 			});
-	}, [user?.email]);
-
+	};
 	// open modal
 	useEffect(() => {
 		setOpenModal(true);
@@ -68,7 +77,7 @@ const Profile = () => {
 							body: JSON.stringify({ image: imgData.data.url }),
 						};
 						fetch(
-							`http://localhost:5000/user/image?email=${user?.email}`,
+							`https://socicom-server-anichu.vercel.app/user/image?email=${user?.email}`,
 							requestOptions
 						)
 							.then((res) => res.json())
@@ -90,7 +99,7 @@ const Profile = () => {
 		} else if (image) {
 			toast.error();
 		}
-	}, [image]);
+	}, [image, user?.email]);
 
 	const submitHandler = async (event) => {
 		event.preventDefault();
@@ -113,7 +122,7 @@ const Profile = () => {
 		};
 		try {
 			const { data } = await axios.put(
-				`http://localhost:5000/user?email=${user?.email}`,
+				`https://socicom-server-anichu.vercel.app/user?email=${user?.email}`,
 				updateUser,
 				{
 					headers: {
@@ -135,8 +144,8 @@ const Profile = () => {
 	};
 	return (
 		<div className="pt-[70px]  text-white">
-			<div className="flex justify-around">
-				<div className="profile-info relative max-h-[500px]  w-[40%] m-4 p-5 bg-indigo-700 rounded-md">
+			<div className="flex md:flex-row flex-col p-2 justify-around">
+				<div className="profile-info relative max-h-[500px]  md:w-[40%] w-full  p-5 bg-indigo-700 rounded-md">
 					<label
 						htmlFor="my-modal-6"
 						className="absolute cursor-pointer top-2 right-2 "
@@ -197,14 +206,28 @@ const Profile = () => {
 						<b className="mr-2">Date Of Birth:</b> {userDetails?.dateOfBirth}
 					</p>
 				</div>
-				<div className="my-post w-[60%]">
+				<div className="my-post md:w-[60%] w-full">
 					{myPostsLoading ? (
 						<Loader></Loader>
 					) : (
 						<div>
-							{myposts.map((post, index) => (
-								<Post profile key={index} post={post}></Post>
-							))}
+							{myposts?.length > 0 ? (
+								myposts.map((post, index) => (
+									<Post
+										myposts={myposts}
+										setMyposts={setMyposts}
+										profile
+										key={index}
+										post={post}
+									></Post>
+								))
+							) : (
+								<div>
+									<h1 className="text-center text-red-700 font-semibold text-xl">
+										There is no post of your.
+									</h1>
+								</div>
+							)}
 						</div>
 					)}
 				</div>
